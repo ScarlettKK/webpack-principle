@@ -35,11 +35,13 @@ module.exports = {
                  * normal loader2
                  * normal loader1
                  */
-                use: [
-                    './loaders/demo/test4.js',
-                    './loaders/demo/test5.js',
-                    './loaders/demo/test6.js',
-                ]
+                // use: [
+                //     './loaders/demo/test4.js',
+                //     './loaders/demo/test5.js',
+                //     './loaders/demo/test6.js',
+                // ]
+                // 打包结果：一堆换行符（因为main.js中只有console.log
+                loader: './loaders/clean-log-loader.js'
             }
         ]
     },

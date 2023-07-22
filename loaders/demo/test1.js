@@ -16,7 +16,7 @@ module.exports = function (content, map, meta) {
   //   this.callback(null, content, map, meta)
   // }, 1000)
 
-
+  // 同步loader调用，表示处理完成
   // 第一个参数error：错误消息，代表是否有错误，无错误是null，否则是具体内容
   // 第二个参数content：处理后的内容
   // 第三个参数map：source-map，就相当于把上一个loader给的source-map传递给下一个，让他不中断
