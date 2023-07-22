@@ -42,6 +42,14 @@ module.exports = {
                 // ]
                 // 打包结果：一堆换行符（因为main.js中只有console.log
                 loader: './loaders/clean-log-loader.js'
+            },
+            {
+                test: /\.js$/,
+                loader: './loaders/banner-loader',
+                // 增加options选项，使得作者名可配置
+                options: {
+                    author: 'Scarlett'
+                }
             }
         ]
     },

@@ -1,0 +1,10 @@
+{
+    "type": "object",
+    "properties": {
+        "author": {
+            "type": "string"
+        }
+    },
+    "additionalProperties": false,
+    "comment": "additionalProperties: 不允许用户在使用时多加props(类似写错场景"
+}
