@@ -50,6 +50,13 @@ module.exports = {
                 options: {
                     author: 'Scarlett'
                 }
+            },
+            {
+                test: /\.js$/,
+                loader: './loaders/babel-loader',
+                options: {
+                    presets: ["@babel/preset-env"]
+                }
             }
         ]
     },

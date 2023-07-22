@@ -4,3 +4,7 @@ console.log('hello 111')
 // console.log(
 //     'hello 222'
 // )
+
+const sum = (...args) => {
+    return args.reduce((a, b) => a + b, 0)
+}
