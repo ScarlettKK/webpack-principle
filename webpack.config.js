@@ -1,3 +1,12 @@
+/**
+ * loader: 将webpack不能识别的文件转换成webpack可识别模块
+ * 执行顺序分类：normal、inline loader用的多，pre、post用的少
+ * normal：平时就用了
+ * inline：在import语句中用，详见style-loader
+ *         详情见https://yk2012.github.io/sgg_webpack5/origin/loader.html#loader-%E6%A6%82%E5%BF%B5
+ * loader分类：同步、异步（更好的方案，但没有异步操作不要强行用）、raw、pitch（熔断机制）
+ * 提升：看github源码
+ */
 const path = require("path")
 const HTMLWebpackPlugin = require('html-webpack-plugin')
 
@@ -63,11 +72,11 @@ module.exports = {
                 loader: "./loaders/file-loader",
                 // 解决图片重复打包问题，不然图片资源会由我们处理一次，webpack又处理一次
                 // 这里禁用webpack5默认处理图片资源，仅使用file-loader处理
-                type: "javascript/auto", 
+                type: "javascript/auto",
             },
             {
                 test: /\.css$/,
-                use: ['./loaders/style-loader','css-loader']
+                use: ['./loaders/style-loader', 'css-loader']
             },
         ]
     },
