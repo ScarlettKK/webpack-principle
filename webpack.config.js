@@ -39,6 +39,7 @@
  */
 const path = require("path")
 const HTMLWebpackPlugin = require('html-webpack-plugin')
+const TestPlugin = require('./plugins/test-plugin')
 
 
 module.exports = {
@@ -114,6 +115,7 @@ module.exports = {
         new HTMLWebpackPlugin({
             template: path.resolve(__dirname, './src/index.html')
         }),
+        new TestPlugin()
     ],
     mode: 'development'
 }
