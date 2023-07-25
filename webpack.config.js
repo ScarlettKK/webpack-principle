@@ -57,7 +57,18 @@ module.exports = {
                 options: {
                     presets: ["@babel/preset-env"]
                 }
-            }
+            },
+            {
+                test: /\.(png|jpe?g|gif)$/,
+                loader: "./loaders/file-loader",
+                // 解决图片重复打包问题，不然图片资源会由我们处理一次，webpack又处理一次
+                // 这里禁用webpack5默认处理图片资源，仅使用file-loader处理
+                type: "javascript/auto", 
+            },
+            {
+                test: /\.css$/,
+                use: ['./loaders/style-loader','css-loader']
+            },
         ]
     },
     plugins: [

@@ -1,3 +1,5 @@
+import './index.css'
+
 console.log('hello main')
 
 console.log('hello 111')
