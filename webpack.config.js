@@ -7,6 +7,36 @@
  * loader分类：同步、异步（更好的方案，但没有异步操作不要强行用）、raw、pitch（熔断机制）
  * 提升：看github源码
  */
+/**
+ * Plugin: 通过插件我们可以扩展 webpack，加入自定义的构建行为，
+ *         使 webpack 可以执行更广泛的任务，拥有更强的构建能力。
+ * 插件：插入到某一个特定的webpack流水线阶段，去干一些特定的事情
+ * 站在代码逻辑的角度就是：webpack 在编译代码过程中，会触发一系列 【Tapable 钩子事件】，
+ *                    插件所做的，就是找到相应的钩子，往上面挂上自己的任务，也就是注册事件，
+ *                    这样，当 webpack 构建的时候，插件注册的事件就会随着钩子的触发而执行了。
+ *                    （类似react生命周期）
+ * 钩子的本质就是：事件。为了方便我们直接介入和控制编译过程，
+ *              webpack 把编译过程中触发的各类关键事件封装成事件接口暴露了出来。
+ *              这些接口被很形象地称做：hooks（钩子）。开发插件，离不开这些钩子。
+ * webpack 中目前有十种 hooks，在 Tapable 源码中可以看到
+ * Tapable 还统一暴露了三个方法给插件，用于注入不同类型的自定义构建行为：（三种方法，可以注册多种钩子）
+ *                                                           tap：可以注册【同步】钩子和【异步】钩子。
+ *                                                           tapAsync：回调方式注册【异步】钩子。
+ *                                                           tapPromise：Promise 方式注册【异步】钩子
+ * Plugin 构建对象：
+ * 1. 【环境配置，唯一，流程管理】compiler 对象中保存着完整的 Webpack 环境配置，
+ *    每次启动 webpack 构建时它都是一个独一无二，仅仅会创建一次的对象。
+ *    这个对象会在首次启动 Webpack 时创建，我们可以通过 compiler 对象上访问到 Webapck 的主环境配置，
+ *    比如 loader 、 plugin 等等配置信息。
+ *    （可以获取到webpack配置文件中的所有信息、可以进行文件操作、可以拿到上面的hooks）
+ * 2. 【资源处理，一个资源一个，资源管理】compilation 对象代表一次资源的构建，compilation 实例能够访问所有的模块和它们的依赖。
+ *    一个 compilation 对象会对构建依赖图中所有模块，进行编译。 
+ *    在编译阶段，模块会被加载(load)、封存(seal)、优化(optimize)、 分块(chunk)、哈希(hash)和重新创建(restore)。
+ *    （对具体资源的处理，可以访问打包的每一个文件、代码块、打包结果，也可以注册hook，比compiler的hook更多）
+ * 具体文档见webpack官网
+ * 
+ * 生命周期简图：https://yk2012.github.io/sgg_webpack5/origin/plugin.html#%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F%E7%AE%80%E5%9B%BE
+ */
 const path = require("path")
 const HTMLWebpackPlugin = require('html-webpack-plugin')
 
