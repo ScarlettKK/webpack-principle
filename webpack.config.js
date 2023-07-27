@@ -40,6 +40,7 @@
 const path = require("path")
 const HTMLWebpackPlugin = require('html-webpack-plugin')
 const TestPlugin = require('./plugins/test-plugin')
+const BannerWebpackPlugin = require('./plugins/banner-webpack-plugin')
 
 
 module.exports = {
@@ -83,14 +84,14 @@ module.exports = {
                 // 打包结果：一堆换行符（因为main.js中只有console.log
                 loader: './loaders/clean-log-loader.js'
             },
-            {
-                test: /\.js$/,
-                loader: './loaders/banner-loader',
-                // 增加options选项，使得作者名可配置
-                options: {
-                    author: 'Scarlett'
-                }
-            },
+            // {
+            //     test: /\.js$/,
+            //     loader: './loaders/banner-loader',
+            //     // 增加options选项，使得作者名可配置
+            //     options: {
+            //         author: 'Scarlett'
+            //     }
+            // },
             {
                 test: /\.js$/,
                 loader: './loaders/babel-loader',
@@ -115,7 +116,10 @@ module.exports = {
         new HTMLWebpackPlugin({
             template: path.resolve(__dirname, './src/index.html')
         }),
-        new TestPlugin()
+        // new TestPlugin(),
+        new BannerWebpackPlugin({
+            author: 'Scarlett'
+        })
     ],
-    mode: 'development'
+    mode: 'production'
 }
