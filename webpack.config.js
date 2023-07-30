@@ -24,7 +24,7 @@
  *                                                           tapAsync：回调方式注册【异步】钩子。
  *                                                           tapPromise：Promise 方式注册【异步】钩子
  * Plugin 构建对象：
- * 1. 【环境配置，唯一，流程管理】compiler 对象中保存着完整的 Webpack 环境配置，
+ * 1. 【环境配置，全程唯一，流程管理】compiler 对象中保存着完整的 Webpack 环境配置，
  *    每次启动 webpack 构建时它都是一个独一无二，仅仅会创建一次的对象。
  *    这个对象会在首次启动 Webpack 时创建，我们可以通过 compiler 对象上访问到 Webapck 的主环境配置，
  *    比如 loader 、 plugin 等等配置信息。
@@ -33,6 +33,23 @@
  *    一个 compilation 对象会对构建依赖图中所有模块，进行编译。 
  *    在编译阶段，模块会被加载(load)、封存(seal)、优化(optimize)、 分块(chunk)、哈希(hash)和重新创建(restore)。
  *    （对具体资源的处理，可以访问打包的每一个文件、代码块、打包结果，也可以注册hook，比compiler的hook更多）
+ *    （maybe 一个打包入口就有一个 compilation 对象？多个如何理解？）
+ * 
+ * Plugin 构建对象 补充信息：
+ * 简单来说，Compilation的职责就是对所有 require/import 语句中对象的字面上的编译，
+ * 编译构建 module 和 chunk，并调用插件构建过程，同时把本次构建编译的内容全存到内存里。
+ * compilation 编译可以多次执行，如在watch模式下启动 webpack，
+ * 解答你的疑惑：
+ * 【开发模式下会有多个compilation，当开发者修改文件后，会生成新的compilation对象，但此时Compiler不变】
+ * 【其他场景也就是一个，多入口文件并不会有多个compilation，因为打包结果只有一个出口】
+ * 【当 Webpack 以【开发模式】运行时，每次监测到源文件发生变化，都会重新实例化一个compilation对象，
+ * 从而生成一组新的编译资源对象。这个对象可以访问所有的模块和它们的依赖。】
+ * 
+ * Compiler 代表了整个 Webpack 从启动到关闭的生命周期，而 Compilation 只是代表了一次新的编译
+ * 【传给每个插件的 Compiler 和 Compilation 对象都是同一个引用。】
+ * 也就是说在一个插件中修改了 Compiler 或 Compilation 对象上的属性，会影响到后面的插件
+ * compiler 对象记录着构建过程中 webpack 环境与配置信息，整个 webpack 从开始到结束的生命周期。针对的是webpack。
+ * compilation 对象记录编译模块的信息，只要项目文件有改动，compilation 就会被重新创建。针对的是随时可变的项目文件。
  * 具体文档见webpack官网
  * 
  * 生命周期简图：https://yk2012.github.io/sgg_webpack5/origin/plugin.html#%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F%E7%AE%80%E5%9B%BE
@@ -40,6 +57,9 @@
 const path = require("path")
 const HTMLWebpackPlugin = require('html-webpack-plugin')
 const TestPlugin = require('./plugins/test-plugin')
+const BannerWebpackPlugin = require('./plugins/banner-webpack-plugin')
+const CleanWebpackPlugin = require('./plugins/clean-webpack-plugin')
+const AnalyzeWebpackPlugin = require('./plugins/analyze-webpack-plugin')
 
 
 module.exports = {
@@ -47,7 +67,7 @@ module.exports = {
     output: {
         path: path.resolve(__dirname, './dist'),
         filename: 'js/[name].js',
-        clean: true
+        // clean: true // 此处我们后面用自定义插件CleanWebpackPlugin解决
     },
     module: {
         rules: [
@@ -83,14 +103,14 @@ module.exports = {
                 // 打包结果：一堆换行符（因为main.js中只有console.log
                 loader: './loaders/clean-log-loader.js'
             },
-            {
-                test: /\.js$/,
-                loader: './loaders/banner-loader',
-                // 增加options选项，使得作者名可配置
-                options: {
-                    author: 'Scarlett'
-                }
-            },
+            // {
+            //     test: /\.js$/,
+            //     loader: './loaders/banner-loader',
+            //     // 增加options选项，使得作者名可配置
+            //     options: {
+            //         author: 'Scarlett'
+            //     }
+            // },
             {
                 test: /\.js$/,
                 loader: './loaders/babel-loader',
@@ -115,7 +135,12 @@ module.exports = {
         new HTMLWebpackPlugin({
             template: path.resolve(__dirname, './src/index.html')
         }),
-        new TestPlugin()
+        // new TestPlugin(),
+        new BannerWebpackPlugin({
+            author: 'Scarlett'
+        }),
+        new CleanWebpackPlugin(),
+        new AnalyzeWebpackPlugin()
     ],
-    mode: 'development'
+    mode: 'production'
 }
