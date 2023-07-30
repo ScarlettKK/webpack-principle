@@ -20,7 +20,7 @@ class TestPlugin {
         // 由文档可知，environment是同步钩子，必须要使用tap注册
         // 传入插件名称+回调函数（这个也是看文档，不同的钩子有不同的参数
         compiler.hooks.environment.tap('TestPlugin', () => {
-            console.log('TestPlugin compiler environment hook' )
+            console.log('TestPlugin compiler environment hook')
         })
 
         // ————————————————————————————————————————————————
@@ -52,8 +52,8 @@ class TestPlugin {
             }, 2000);
         })
 
-         // tapPromise 要求返回一个 promise 对象
-         compiler.hooks.emit.tapPromise('TestPlugin', (compilation) => {
+        // tapPromise 要求返回一个 promise 对象
+        compiler.hooks.emit.tapPromise('TestPlugin', (compilation) => {
             return new Promise((resolve) => {
                 setTimeout(() => {
                     console.log('TestPlugin compiler emit tapPromise hook')
@@ -62,11 +62,11 @@ class TestPlugin {
             });
         })
 
-         // ————————————————————————————————————————————————
-         // make: AsyncParallelHook，异步并行hook
-         // 可以看到异步并行受延迟时间的影响，不一定按照定义顺序执行
-         // 并行是全部同时开始计时，下面每个hook执行相隔1s
-         compiler.hooks.make.tapAsync('TestPlugin', (compilation, callback) => {
+        // ————————————————————————————————————————————————
+        // make: AsyncParallelHook，异步并行hook
+        // 可以看到异步并行受延迟时间的影响，不一定按照定义顺序执行
+        // 并行是全部同时开始计时，下面每个hook执行相隔1s
+        compiler.hooks.make.tapAsync('TestPlugin', (compilation, callback) => {
             // console.log('compilation', compilation)
             // seal: compilation上的同步钩子，无参数
             // compilation的钩子需要在compilation hooks触发之前注册才有用，最晚最晚要在make中注册
